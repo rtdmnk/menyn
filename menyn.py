@@ -1,5 +1,5 @@
 #!/usr/bin/python3.5
-import pygame, re, sys, test
+import pygame, re, sys
 
 # Menu objects
 m_object = {}
@@ -14,7 +14,7 @@ Fcolour = ""
 Bcolour = ""
 
 # Module specific
-version = '0.2'
+version = '0.3'
 
 def parse_style(style):
     r = []
@@ -91,7 +91,7 @@ def event(event):
                     global labels
                     labels.remove(a.inp)
                     a.inp = ""
-                    m_object.execute(a.name)
+                    m_object.menynExecute(a.name)
                 elif key == "backspace":
                     a.value = a.value[:-1]
                     a.label.text = a.value
@@ -131,8 +131,6 @@ class Label(pygame.sprite.Sprite):
 
         # Add text object to global list for text objects
         labels.append(self)
-
-        print("[LABEL] added", self)
 
     def update(self):
         # Update the render object, if new text et.c.
@@ -176,8 +174,6 @@ class Input(pygame.sprite.Sprite):
 
         inputs.add(self)
         inputsObjs.append(self)
-
-        print("[INPUT] added", self)
 
     def update(self):
         # Get mouse click rectangle (for rectangle collision)
@@ -226,10 +222,8 @@ class Button(pygame.sprite.Sprite):
         # Add button to global objects group
         buttons.add(self)
 
-        print("[BUTTON] added", self)
-
     def update(self):
         # Get mouse click rectangle (for rectangle collision)
         mouse_rect = pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 5, 5)
         if(pygame.Rect(mouse_rect).colliderect(self.rect)):
-            m_object.execute(self.name)
+            m_object.menynExecute(self.name)
