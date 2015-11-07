@@ -76,33 +76,12 @@ def event(event):
         # Set input field to active if pressed
         inputs.update()
     if event.type == pygame.KEYUP:
-        for a in inputsObjs:
+        for inputField in inputsObjs:
             # If an input field is active
-            if a.active:
-                # Fetch key
+            if inputField.active:
+                # Fetch key and send it to the input object's addinput func
                 key = str(pygame.key.name(event.key))
-                if key == "return":
-                    # Reset inputs active state
-                    a.active = False
-                    print("[INPUT] value change", a.value)
-                    # Update input label
-                    a.label.text = a.value
-                    # Remove the active mark
-                    global labels
-                    labels.remove(a.inp)
-                    a.inp = ""
-                    m_object.menynExecute(a.name)
-                elif key == "backspace":
-                    a.value = a.value[:-1]
-                    a.label.text = a.value
-                    # Don't move the mark when no chars
-                    if len(a.value) > 0:
-                        a.inp.x -= 5
-                # If char isn't more than one (e.g: not ctrl key et.c.)
-                elif len(re.findall("[A-z\d]", key)) == 1:
-                    a.value += key
-                    a.label.text = a.value
-                    a.inp.x += 5
+                inputField.addinput(key)
 
 class Label(pygame.sprite.Sprite):
 
@@ -175,6 +154,33 @@ class Input(pygame.sprite.Sprite):
         inputs.add(self)
         inputsObjs.append(self)
 
+    def addinput(self, key):
+        if key == "return":
+            # Reset input fields active state and update label
+            self.active = False
+            self.label.text = self.value
+            # Remove the activation marker
+            global labels
+            labels.remove(self.inp)
+            self.inp = ""
+            # Send the execute state to the initializor
+            m_object.mExecute(self.name)
+        elif key == "backspace":
+            # Remove last character and update label
+            self.value = self.value[:-1]
+            self.label.text = self.value
+            # If input field is empty, don't move activation marker
+            if len(self.value) > 0:
+                self.inp.x -= 5
+        # If the key is not more than one character (e.g: ctrl)
+        elif len(re.findall("[A-z\d]", key)) == 1:
+            # Add to value and update label
+            self.value += key
+            self.label.text = self.value
+            # Move activation marker
+            self.inp.x += 5
+
+
     def update(self):
         # Get mouse click rectangle (for rectangle collision)
         mouse_rect = pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 5, 5)
@@ -226,4 +232,4 @@ class Button(pygame.sprite.Sprite):
         # Get mouse click rectangle (for rectangle collision)
         mouse_rect = pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 5, 5)
         if(pygame.Rect(mouse_rect).colliderect(self.rect)):
-            m_object.menynExecute(self.name)
+            m_object.mExecute(self.name)
