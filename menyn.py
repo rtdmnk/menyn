@@ -50,7 +50,6 @@ def init(obj, style=None):
             else:
                 print("invalid: ", a)
 
-
     print("Initialized menyn version", version)
 
 def draw(screen):

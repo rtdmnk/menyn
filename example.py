@@ -18,7 +18,6 @@ class main_menu():
 
         # Menyn initialization
         #   You need to send an object to it so that Menyn can point back it for things, such as executions of buttons or storing of input
-        #   See the execute function
         #   The style parameter is an optional one to send forward default values to Menyn
         menu.init(self, style="background=(0,0,0), foreground=(255,255,255)")
 
@@ -38,15 +37,18 @@ class main_menu():
         self.loop()
 
     # A function used for executing things on button presses et.c.
-    def menynExecute(self, name):
+    def mExecute(self, name):
         if name == "printButton":
-            if self.nomnom:
+            # In this case a button was pressed
+            try:
                 print(self.nomnom)
-            else:
+            except Exception as e:
                 print('No name')
         elif name == "exitButton":
+            # Same as above
             sys.exit()
         elif name == "textInput":
+            # Here the user pressed return while typing into an input field
             self.nomnom = self.textInput.value
 
     # Main loop for PyGame
@@ -56,20 +58,19 @@ class main_menu():
             msElapsed = clock.tick(60)
 
             for event in pygame.event.get():
-                # Menu stuff
+                # Let Menyn check for events
                 menu.event(event)
 
                 if event.type == QUIT:
                     return
 
-            # Logic 'n stuff
+            # Update the FPS label
             self.fpsText.text = str(int(clock.get_fps()))
 
             # Refill screen
             self.screen.fill(black)
 
-            # Draw objects and do some logic for Menyn
-            #   Always draw before update
+            # Draw objects and do some logic for Menyn, always draw before update
             menu.draw(self.screen)
             menu.update()
 
